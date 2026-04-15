@@ -1,0 +1,1765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UserVoice — Forums & Categories</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Proxima+Nova:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue-9:  #071e3e;
+      --blue-8:  #0c3268;
+      --blue-7:  #165abb;
+      --blue-6:  #1b6ee4;
+      --blue-2:  #eaf2fd;
+      --blue-1:  #f5f9fe;
+      --gray-6:  #464653;
+      --gray-5:  #787885;
+      --gray-4:  #aaaab4;
+      --gray-3:  #dadade;
+      --gray-2:  #f5f5f8;
+      --gray-1:  #fafafc;
+      --green:   #1a8a4a;
+      --pn: 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    body {
+      font-family: var(--pn);
+      background: var(--gray-2);
+      color: var(--blue-9);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ───── Left Sidebar (UV Admin) ───── */
+    .sidebar {
+      width: 64px;
+      background: white;
+      border-right: 1px solid var(--gray-3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 0;
+      flex-shrink: 0;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+    }
+    .sidebar-logo {
+      width: 36px; height: 36px; background: var(--blue-8);
+      border-radius: 8px; display: flex; align-items: center;
+      justify-content: center; margin-bottom: 24px; cursor: pointer;
+    }
+    .sidebar-logo svg { width: 20px; height: 20px; }
+    .sidebar-nav { display: flex; flex-direction: column; gap: 4px; flex: 1; width: 100%; }
+    .sidebar-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      padding: 8px 4px; cursor: pointer; border: none; background: none;
+      color: var(--gray-5); font-size: 9px; font-weight: 500;
+      font-family: var(--pn); transition: color 0.15s; width: 100%;
+      text-decoration: none;
+    }
+    .sidebar-btn:hover { color: var(--blue-6); }
+    .sidebar-btn.active { color: var(--blue-6); }
+    .sidebar-btn svg { width: 20px; height: 20px; opacity: 0.6; }
+    .sidebar-btn.active svg { opacity: 1; }
+    .sidebar-spacer { flex: 1; }
+    .sidebar-bottom { display: flex; flex-direction: column; gap: 4px; width: 100%; align-items: center; }
+    .sidebar-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, #f5831f, #e8155b);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: white; cursor: pointer;
+      margin-top: 8px;
+    }
+
+    /* ───── Main Content ───── */
+    .main { flex: 1; padding: 28px 40px; overflow: auto; }
+
+    .breadcrumb {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; color: var(--gray-5); margin-bottom: 20px;
+    }
+    .breadcrumb a { color: var(--blue-6); text-decoration: none; font-weight: 500; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb-sep { color: var(--gray-4); }
+
+    .page-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .page-title {
+      font-size: 21px; font-weight: 700; color: var(--blue-9);
+      letter-spacing: -0.2px;
+    }
+    .page-desc {
+      font-size: 14px; font-weight: 400; color: var(--gray-6);
+      line-height: 1.6; max-width: 480px; margin-bottom: 6px;
+    }
+    .page-link {
+      font-size: 13px; color: var(--gray-5); margin-bottom: 24px;
+    }
+    .page-link a { color: var(--blue-6); text-decoration: none; }
+    .page-link a:hover { text-decoration: underline; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 10px 20px; border-radius: 6px; font-size: 14px;
+      font-weight: 600; cursor: pointer; border: none;
+      transition: background 0.15s; font-family: var(--pn);
+    }
+    .btn-primary { background: var(--blue-6); color: white; }
+    .btn-primary:hover { background: var(--blue-7); }
+
+    /* ───── Settings Tabs ───── */
+    .settings-tabs {
+      display: flex; gap: 0; border-bottom: 1px solid var(--gray-3);
+      margin-bottom: 24px;
+    }
+    .settings-tab {
+      padding: 10px 18px; font-size: 14px; font-weight: 500;
+      color: var(--gray-5); cursor: pointer; border: none; background: none;
+      font-family: var(--pn); border-bottom: 2px solid transparent;
+      transition: color 0.15s;
+    }
+    .settings-tab:hover { color: var(--blue-9); }
+    .settings-tab.active { color: var(--blue-9); font-weight: 600; border-bottom-color: var(--blue-6); }
+
+    /* ───── Forums Table ───── */
+    .table-header {
+      display: grid;
+      grid-template-columns: 1fr 100px 90px 80px 60px 70px 40px;
+      padding: 10px 20px;
+      font-size: 11px; font-weight: 600; color: var(--gray-5);
+      letter-spacing: 0.07em; text-transform: uppercase;
+      border-bottom: 1px solid var(--gray-3);
+    }
+    .forums-count {
+      font-size: 13px; font-weight: 500; color: var(--gray-5);
+      text-transform: none; letter-spacing: 0;
+    }
+    .forum-row {
+      display: grid;
+      grid-template-columns: 1fr 100px 90px 80px 60px 70px 40px;
+      align-items: center;
+      padding: 16px 20px;
+      background: white;
+      border: 1px solid var(--gray-3);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: box-shadow 0.15s;
+    }
+    .forum-row:hover { box-shadow: 0 2px 8px rgba(7,30,62,0.08); }
+    .forum-info { display: flex; align-items: center; gap: 12px; }
+    .forum-drag {
+      display: flex; flex-direction: column; gap: 2px; cursor: grab; padding: 4px;
+      opacity: 0.3;
+    }
+    .forum-drag span {
+      width: 12px; height: 2px; background: var(--gray-4); border-radius: 1px;
+      display: block;
+    }
+    .forum-details { flex: 1; }
+    .forum-name { font-size: 14px; font-weight: 600; color: var(--blue-9); }
+    .forum-desc { font-size: 12px; color: var(--gray-5); margin-top: 2px; }
+    .category-badge {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--blue-6); color: white;
+      font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .visibility-cell {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 13px; color: var(--gray-6);
+    }
+    .portal-link {
+      font-size: 13px; color: var(--gray-6);
+      display: flex; align-items: center; gap: 4px;
+    }
+    .portal-link svg { opacity: 0.5; }
+    .default-radio {
+      width: 20px; height: 20px; border-radius: 50%;
+      border: 2px solid var(--gray-3); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.15s;
+    }
+    .default-radio.selected { border-color: var(--blue-6); }
+    .default-radio.selected::after {
+      content: ''; width: 10px; height: 10px; border-radius: 50%;
+      background: var(--blue-6);
+    }
+    .overflow-btn {
+      width: 28px; height: 28px; border-radius: 6px; border: none;
+      background: none; cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
+      transition: background 0.15s; color: var(--gray-5);
+    }
+    .overflow-btn:hover { background: var(--gray-2); }
+    .default-header {
+      display: flex; align-items: center; gap: 4px;
+    }
+    .help-icon {
+      width: 16px; height: 16px; border-radius: 50%;
+      border: 1px solid var(--gray-4); display: inline-flex;
+      align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: var(--gray-4);
+      cursor: help;
+    }
+
+    /* ───── Overlay ───── */
+    .overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(7,30,62,0.4); z-index: 200; backdrop-filter: blur(1px);
+    }
+    .overlay.open { display: block; }
+
+    /* ───── Slide Panel (Setup Wizard) ───── */
+    .slide-panel {
+      position: fixed; top: 0; right: -440px; width: 420px; height: 100vh;
+      background: white; z-index: 201;
+      box-shadow: -7px -6px 14px 0px rgba(0,0,0,0.15);
+      display: flex; flex-direction: column;
+      transition: right 0.28s cubic-bezier(0.4,0,0.2,1);
+      overflow: hidden; font-family: var(--pn);
+    }
+    .slide-panel.open { right: 0; }
+
+    .sp-header {
+      background: var(--blue-8); min-height: 52px;
+      padding: 0 20px; display: flex; align-items: center;
+      justify-content: space-between; flex-shrink: 0;
+    }
+    .sp-header-title {
+      color: white; font-size: 15px; font-weight: 600;
+      font-family: var(--pn);
+    }
+    .sp-header-close {
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; background: none; border: none; padding: 8px;
+    }
+
+    .sp-step-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 20px; border-bottom: 1px solid var(--gray-3);
+      font-size: 12px; color: var(--gray-5); background: var(--gray-1);
+    }
+    .sp-step-nav { display: flex; align-items: center; gap: 12px; }
+    .sp-step-arrow {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 1px solid var(--gray-3); background: white;
+      cursor: pointer; display: flex; align-items: center;
+      justify-content: center; transition: background 0.15s;
+      color: var(--gray-5);
+    }
+    .sp-step-arrow:hover { background: var(--gray-2); }
+    .sp-step-arrow.disabled { opacity: 0.3; cursor: not-allowed; }
+
+    .sp-scrollable { overflow-y: auto; flex: 1; }
+
+    .sp-body {
+      padding: 28px 28px; display: flex; flex-direction: column; gap: 20px;
+    }
+    .sp-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: var(--blue-2); display: flex; align-items: center;
+      justify-content: center; flex-shrink: 0;
+    }
+    .sp-title-row { display: flex; align-items: center; gap: 14px; }
+    .sp-title-text {
+      font-size: 18px; font-weight: 700; color: var(--blue-9);
+      font-family: var(--pn);
+    }
+    .sp-description {
+      font-size: 14px; font-weight: 400; color: var(--gray-6);
+      line-height: 1.55;
+    }
+    .sp-gradient-divider {
+      height: 2px; width: 100%;
+      background: linear-gradient(to right, #f5831f, #e8155b, #1b6ee4, #12b878);
+    }
+    .sp-field-group { display: flex; flex-direction: column; gap: 6px; }
+    .sp-field-label {
+      font-size: 14px; font-weight: 600; color: var(--gray-6);
+      font-family: var(--pn);
+    }
+    .sp-input {
+      width: 100%; border: 1px solid var(--gray-4); border-radius: 6px;
+      padding: 12px 16px; font-size: 14px; font-weight: 500;
+      color: var(--blue-9); font-family: var(--pn); outline: none;
+      transition: border-color 0.15s;
+    }
+    .sp-input:focus { border-color: var(--blue-6); }
+    .sp-input::placeholder { color: var(--gray-4); font-weight: 400; }
+    .sp-textarea {
+      width: 100%; border: 1px solid var(--gray-4); border-radius: 6px;
+      padding: 12px 16px; font-size: 14px; font-weight: 400;
+      color: var(--blue-9); font-family: var(--pn); outline: none;
+      resize: vertical; min-height: 80px; line-height: 1.5;
+      transition: border-color 0.15s;
+    }
+    .sp-textarea:focus { border-color: var(--blue-6); }
+
+    .sp-info-box {
+      background: var(--blue-2); border-radius: 6px;
+      padding: 12px 16px; display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: var(--gray-6); line-height: 1.5;
+    }
+
+    .sp-buttons {
+      display: flex; flex-direction: column; align-items: center; gap: 14px;
+      padding-top: 12px;
+    }
+    .sp-btn-confirm {
+      width: 100%; height: 46px; background: var(--blue-6); color: white;
+      border: none; border-radius: 6px; font-size: 14px; font-weight: 600;
+      font-family: var(--pn); cursor: pointer; transition: background 0.15s;
+    }
+    .sp-btn-confirm:hover { background: var(--blue-7); }
+    .sp-btn-cancel {
+      font-size: 14px; font-weight: 500; color: #000;
+      background: none; border: none; cursor: pointer;
+      font-family: var(--pn); transition: color 0.15s;
+    }
+    .sp-btn-cancel:hover { color: var(--gray-6); }
+
+    /* ───── Category List (Step 2) ───── */
+    .category-list { display: flex; flex-direction: column; gap: 0; }
+    .category-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px; border: 1px solid var(--gray-3);
+      border-radius: 0; background: white; cursor: default;
+      transition: background 0.1s;
+    }
+    .category-item:first-child { border-radius: 8px 8px 0 0; }
+    .category-item:last-child { border-radius: 0 0 8px 8px; }
+    .category-item:only-child { border-radius: 8px; }
+    .category-item + .category-item { border-top: none; }
+    .category-item:hover { background: var(--blue-1); }
+    .category-item-left {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 14px; font-weight: 500; color: var(--blue-9);
+    }
+    .category-item-right {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .owner-tag {
+      display: flex; align-items: center; gap: 6px;
+      padding: 4px 10px; border-radius: 20px;
+      background: var(--blue-2); font-size: 12px; font-weight: 600;
+      color: var(--blue-6); cursor: pointer; transition: background 0.15s;
+    }
+    .owner-tag:hover { background: #d4e4fb; }
+    .owner-avatar-sm {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--blue-7); color: white;
+      font-size: 8px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .assign-btn {
+      padding: 5px 12px; border-radius: 5px; border: 1px solid var(--gray-3);
+      background: white; font-size: 12px; font-weight: 500;
+      color: var(--gray-6); font-family: var(--pn); cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .assign-btn:hover { border-color: var(--blue-6); color: var(--blue-6); }
+    .remove-owner-btn {
+      width: 18px; height: 18px; border-radius: 50%;
+      background: none; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--gray-4); transition: color 0.15s;
+    }
+    .remove-owner-btn:hover { color: var(--blue-9); }
+
+    /* ───── Assign Accordion (Step 3) ───── */
+    .assign-accordion { display: flex; flex-direction: column; gap: 0; }
+    .assign-accord-item {
+      border-bottom: 1px solid var(--gray-3);
+      transition: background 0.1s;
+    }
+    .assign-accord-header { cursor: pointer; }
+    .assign-accord-item:last-child { border-bottom: none; }
+    .assign-accord-header {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 14px 0;
+    }
+    .assign-accord-radio {
+      width: 16px; height: 16px; border-radius: 50%;
+      border: 2px solid var(--gray-4); flex-shrink: 0; margin-top: 2px;
+      transition: border-color 0.15s;
+    }
+    .assign-accord-item.active .assign-accord-radio {
+      border: 5px solid var(--blue-6);
+    }
+    .assign-accord-text { flex: 1; }
+    .assign-accord-title {
+      font-size: 16px; font-weight: 700; color: var(--blue-9);
+      font-family: var(--pn); line-height: 1.4;
+    }
+    .assign-accord-desc {
+      font-size: 14px; font-weight: 500; color: var(--gray-6);
+      line-height: 1.6; margin-top: 2px;
+    }
+    .assign-accord-body {
+      display: none; padding: 0 0 14px 30px;
+    }
+    .assign-accord-item.active .assign-accord-body { display: block; }
+    .assign-accord-body .assign-tab-desc {
+      font-size: 14px; font-weight: 500; color: var(--gray-6);
+      line-height: 1.55; margin-bottom: 10px;
+    }
+    .assign-accord-body .assign-tab-desc a { color: var(--blue-6); text-decoration: underline; }
+
+    /* ───── Category Assign — Stacked Layout ───── */
+    .category-assign-list {
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .category-assign-field { position: relative; }
+    .category-assign-label {
+      font-size: 14px; font-weight: 600; color: var(--blue-9);
+      margin-bottom: 6px; font-family: var(--pn);
+    }
+    .category-assign-select {
+      width: 100%; display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; border: 1px solid var(--gray-3); border-radius: 8px;
+      background: white; cursor: pointer; font-family: var(--pn);
+      transition: border-color 0.15s;
+    }
+    .category-assign-select:hover { border-color: var(--gray-5); }
+    .category-assign-select.has-admin { border-color: var(--blue-6); background: var(--blue-1); }
+    .cat-select-avatar {
+      width: 26px; height: 26px; border-radius: 50%;
+      font-size: 9px; font-weight: 700; color: white;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .cat-select-placeholder {
+      width: 26px; height: 26px; border-radius: 50%;
+      border: 1.5px dashed var(--gray-4); flex-shrink: 0;
+    }
+    .cat-select-name {
+      flex: 1; font-size: 14px; font-weight: 500; color: var(--blue-9);
+    }
+    .cat-select-name.empty { color: var(--gray-4); }
+    .cat-select-chevron { flex-shrink: 0; color: var(--gray-4); }
+    .cat-assigned-card {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; border: 1px solid var(--gray-3); border-radius: 8px;
+      background: var(--gray-1);
+    }
+    .cat-assigned-info { flex: 1; display: flex; flex-direction: column; }
+    .cat-assigned-name { font-size: 14px; font-weight: 600; color: var(--blue-9); }
+    .cat-assigned-email { font-size: 12px; color: var(--gray-5); }
+    .cat-select-clear {
+      display: flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px; border-radius: 50%; border: none;
+      background: none; cursor: pointer; color: var(--gray-4);
+      flex-shrink: 0; padding: 0; transition: background 0.1s, color 0.1s;
+    }
+    .cat-select-clear:hover { background: rgba(0,0,0,0.08); color: var(--blue-9); }
+
+    /* ───── Admin Picker Dropdown ───── */
+    .admin-picker {
+      display: none; position: absolute; left: 0; right: 0; top: 100%;
+      background: white; border: 1px solid var(--gray-3);
+      border-radius: 10px; z-index: 300;
+      box-shadow: 0 8px 24px rgba(7,30,62,0.15);
+      margin-top: 4px; overflow: hidden;
+    }
+    .admin-picker.open { display: block; }
+    .admin-picker-search {
+      width: 100%; border: none; border-bottom: 1px solid var(--gray-3);
+      padding: 11px 14px; font-size: 14px; font-weight: 500;
+      color: var(--blue-9); font-family: var(--pn); outline: none;
+      box-sizing: border-box;
+    }
+    .admin-picker-search::placeholder { color: var(--gray-4); }
+    .admin-picker-list { max-height: 220px; overflow-y: auto; }
+    .admin-picker-option {
+      padding: 10px 14px; cursor: pointer; display: flex;
+      align-items: center; gap: 10px; transition: background 0.08s;
+    }
+    .admin-picker-option:hover { background: var(--blue-1); }
+    .admin-picker-option .ap-avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      font-size: 11px; font-weight: 700; color: white;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .admin-picker-option .ap-info { display: flex; flex-direction: column; }
+    .admin-picker-option .ap-name { font-size: 14px; font-weight: 600; color: var(--blue-9); }
+    .admin-picker-option .ap-email { font-size: 12px; color: var(--gray-5); }
+    .admin-picker-option.remove {
+      border-top: 1px solid var(--gray-3);
+      color: var(--gray-5); font-size: 13px; font-weight: 500; gap: 8px;
+    }
+    .admin-picker-option.remove:hover { background: var(--gray-2); }
+    .admin-picker-option.selected { background: var(--blue-2); }
+
+    /* ───── Visibility Options (Step 4) ───── */
+    .visibility-option {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 16px; border: 2px solid var(--gray-3);
+      border-radius: 8px; cursor: pointer; transition: border-color 0.15s;
+    }
+    .visibility-option.selected { border-color: var(--blue-6); }
+    .visibility-option + .visibility-option { margin-top: 10px; }
+    .vis-radio {
+      width: 20px; height: 20px; border-radius: 50%;
+      border: 2px solid var(--gray-3); flex-shrink: 0; margin-top: 2px;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.15s;
+    }
+    .visibility-option.selected .vis-radio { border-color: var(--blue-6); }
+    .visibility-option.selected .vis-radio::after {
+      content: ''; width: 10px; height: 10px; border-radius: 50%;
+      background: var(--blue-6);
+    }
+    .vis-content { flex: 1; }
+    .vis-title { font-size: 14px; font-weight: 600; color: var(--blue-9); display: flex; align-items: center; gap: 8px; }
+    .vis-desc { font-size: 13px; color: var(--gray-5); margin-top: 4px; }
+
+    /* ───── Assign Owner Modal ───── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(7,30,62,0.5); z-index: 300;
+      backdrop-filter: blur(2px);
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: white; border-radius: 10px; width: 400px;
+      box-shadow: 2px 7px 14px rgba(170,170,178,0.21);
+      overflow: hidden;
+    }
+    .modal-header {
+      background: var(--blue-8); padding: 16px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-header-title {
+      color: white; font-size: 15px; font-weight: 600; font-family: var(--pn);
+    }
+    .modal-close {
+      background: none; border: none; cursor: pointer; padding: 4px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .modal-body { padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+    .modal-title-row { display: flex; align-items: center; gap: 14px; }
+    .modal-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: var(--blue-2); display: flex; align-items: center;
+      justify-content: center; flex-shrink: 0;
+    }
+    .modal-title { font-size: 18px; font-weight: 700; color: var(--blue-9); }
+    .modal-desc { font-size: 14px; color: var(--gray-6); line-height: 1.55; }
+
+    .modal-dropdown-wrapper { position: relative; }
+    .modal-dropdown {
+      width: 100%; border: 1px solid var(--gray-4); border-radius: 6px;
+      padding: 12px 16px; display: flex; align-items: center;
+      justify-content: space-between; cursor: pointer;
+      transition: border-color 0.15s; background: white;
+    }
+    .modal-dropdown:hover { border-color: var(--gray-5); }
+    .modal-dropdown.open { border-color: var(--blue-6); border-radius: 6px 6px 0 0; }
+    .modal-dropdown-value {
+      font-size: 14px; font-weight: 500; color: var(--gray-4);
+      font-family: var(--pn); display: flex; align-items: center; gap: 8px;
+    }
+    .modal-dropdown-value.has-value { color: var(--blue-9); }
+    .modal-dropdown-menu {
+      display: none; position: absolute; top: 100%; left: 0; right: 0;
+      background: white; border: 1px solid var(--blue-6); border-top: none;
+      border-radius: 0 0 6px 6px; z-index: 310; max-height: 200px;
+      overflow-y: auto; box-shadow: 0 4px 12px rgba(7,30,62,0.12);
+    }
+    .modal-dropdown-menu.open { display: block; }
+    .modal-dropdown-option {
+      padding: 10px 16px; cursor: pointer; transition: background 0.1s;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .modal-dropdown-option:hover { background: var(--blue-2); }
+    .modal-dropdown-option + .modal-dropdown-option { border-top: 1px solid #f0f0f3; }
+    .admin-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--blue-7); color: white;
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .admin-info { display: flex; flex-direction: column; }
+    .admin-name { font-size: 14px; font-weight: 600; color: var(--blue-9); }
+    .admin-email { font-size: 12px; color: var(--gray-5); }
+
+    .selected-admin {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--gray-1); border: 1px solid var(--gray-3);
+      border-radius: 6px; padding: 10px 14px;
+    }
+    .selected-admin-remove {
+      margin-left: auto; background: none; border: none;
+      cursor: pointer; color: var(--gray-4); padding: 2px;
+      display: flex; transition: color 0.15s;
+    }
+    .selected-admin-remove:hover { color: var(--blue-9); }
+
+    .modal-gradient {
+      height: 2px; width: 100%;
+      background: linear-gradient(to right, #f5831f, #e8155b, #1b6ee4, #12b878);
+    }
+    .modal-btn-assign {
+      width: 100%; height: 46px; border: none; border-radius: 6px;
+      font-size: 14px; font-weight: 600; font-family: var(--pn);
+      cursor: not-allowed; transition: background 0.15s, color 0.15s;
+      background: var(--gray-3); color: var(--gray-4);
+    }
+    .modal-btn-assign.ready {
+      background: var(--blue-6); color: white; cursor: pointer;
+    }
+    .modal-btn-assign.ready:hover { background: var(--blue-7); }
+    .modal-btn-cancel {
+      width: 100%; text-align: center; padding: 8px;
+      font-size: 14px; font-weight: 500; color: #000;
+      background: none; border: none; cursor: pointer; font-family: var(--pn);
+    }
+
+    /* ───── Add Category Button ───── */
+    .add-category-btn {
+      width: 100%; padding: 12px; border: 1.5px dashed var(--gray-4);
+      border-radius: 8px; background: none; cursor: pointer;
+      font-size: 14px; font-weight: 600; color: var(--blue-6);
+      font-family: var(--pn); transition: border-color 0.15s, background 0.15s;
+      margin-top: 8px;
+    }
+    .add-category-btn:hover { border-color: var(--blue-6); background: var(--blue-1); }
+
+    /* ───── Portal Settings (Step 4) ───── */
+    .prompt-list { display: flex; flex-direction: column; gap: 8px; }
+    .prompt-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; background: var(--gray-1); border-radius: 6px;
+      border: 1px solid var(--gray-3);
+    }
+    .prompt-item-text {
+      flex: 1; font-size: 13px; color: var(--blue-9); font-weight: 500;
+    }
+    .prompt-remove {
+      background: none; border: none; cursor: pointer; color: var(--gray-4);
+      display: flex; padding: 2px; transition: color 0.15s;
+    }
+    .prompt-remove:hover { color: var(--blue-9); }
+
+    .example-link {
+      font-size: 13px; color: var(--blue-6); cursor: pointer;
+      font-weight: 500; display: inline-flex; align-items: center; gap: 4px;
+    }
+    .example-link:hover { text-decoration: underline; }
+
+    /* ───── Overflow Menu ───── */
+    .overflow-menu {
+      position: absolute; right: 0; top: 100%;
+      background: white; border: 1px solid var(--gray-3);
+      border-radius: 8px; box-shadow: 0 4px 16px rgba(7,30,62,0.12);
+      min-width: 180px; z-index: 100; display: none;
+      padding: 6px 0;
+    }
+    .overflow-menu.open { display: block; }
+    .overflow-menu-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 16px; font-size: 13px; font-weight: 500;
+      color: var(--gray-6); cursor: pointer; transition: background 0.1s;
+      font-family: var(--pn);
+    }
+    .overflow-menu-item:hover { background: var(--blue-1); color: var(--blue-9); }
+    .overflow-menu-item svg { width: 15px; height: 15px; opacity: 0.6; }
+    .overflow-menu-item.danger { color: #c53030; }
+    .overflow-menu-item.danger:hover { background: #fff5f5; }
+    .overflow-sep { height: 1px; background: var(--gray-3); margin: 4px 0; }
+
+    /* Assigned cell — clickable to jump to categories */
+    .assigned-cell {
+      display: flex; justify-content: center; align-items: center;
+      cursor: pointer; padding: 4px 0; border-radius: 4px;
+      transition: background 0.15s;
+    }
+    .assigned-cell:hover { background: var(--blue-2); }
+    .assigned-cell span {
+      font-size: 13px; font-weight: 600; color: var(--gray-4);
+      text-decoration: underline; text-underline-offset: 2px;
+    }
+    .assigned-cell.has-assigned span { color: var(--green); }
+
+    /* ───── Summary List ───── */
+    .summary-section { margin-bottom: 16px; }
+    .summary-section-title {
+      font-size: 11px; font-weight: 600; color: var(--gray-4);
+      letter-spacing: 0.07em; text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .summary-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px; border: 1px solid var(--gray-3);
+      background: white; font-size: 13px;
+    }
+    .summary-item:first-child { border-radius: 6px 6px 0 0; }
+    .summary-item:last-child { border-radius: 0 0 6px 6px; }
+    .summary-item:only-child { border-radius: 6px; }
+    .summary-item + .summary-item { border-top: none; }
+    .summary-item-name { font-weight: 500; color: var(--blue-9); display: flex; align-items: center; gap: 8px; }
+    .summary-item-owner { display: flex; align-items: center; gap: 6px; }
+    .summary-owner-tag {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 12px; font-weight: 600; color: var(--blue-6);
+    }
+    .summary-unassigned { font-size: 12px; color: var(--gray-4); font-style: italic; }
+    .summary-stats {
+      display: flex; gap: 20px; padding: 14px 0; border-bottom: 1px solid var(--gray-3);
+      margin-bottom: 16px;
+    }
+    .summary-stat { display: flex; flex-direction: column; gap: 2px; }
+    .summary-stat-value { font-size: 22px; font-weight: 700; color: var(--blue-9); }
+    .summary-stat-value.green { color: var(--green); }
+    .summary-stat-label { font-size: 11px; font-weight: 500; color: var(--gray-5); text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* Relative wrapper for overflow */
+    .overflow-wrapper { position: relative; }
+  </style>
+</head>
+<body>
+
+<!-- ── Sidebar ── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+      <path d="M12 3v18M8 7v10M16 7v10M4 11v2M20 11v2"/>
+    </svg>
+  </div>
+  <div class="sidebar-nav">
+    <a class="sidebar-btn" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+      <span>Ideas &<br>Feedback</span>
+    </a>
+    <a class="sidebar-btn" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      <span>AI Tools</span>
+    </a>
+    <a class="sidebar-btn" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+      <span>Insights</span>
+    </a>
+    <a class="sidebar-btn" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <span>Roadmaps &<br>Features</span>
+    </a>
+    <a class="sidebar-btn" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+      <span>More</span>
+    </a>
+    <div class="sidebar-spacer"></div>
+    <div class="sidebar-bottom">
+      <a class="sidebar-btn active" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        <span>Settings</span>
+      </a>
+      <a class="sidebar-btn" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+        <span></span>
+      </a>
+      <div class="sidebar-avatar">ST</div>
+    </div>
+  </div>
+</aside>
+
+<!-- ── Main ── -->
+<main class="main">
+  <div class="settings-tabs">
+    <button class="settings-tab active">General</button>
+    <button class="settings-tab">Web portal</button>
+    <button class="settings-tab">Widgets</button>
+    <button class="settings-tab">Integrations</button>
+    <button class="settings-tab">Extension</button>
+  </div>
+
+  <div class="breadcrumb">
+    <a href="#">&larr; IDEAS</a>
+  </div>
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Manage Forums and Categories</h1>
+    </div>
+    <button class="btn btn-primary" onclick="openPanel(null)">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16M4 12h16"/></svg>
+      Add Forum
+    </button>
+  </div>
+  <p class="page-desc">Forums are used to create separate types of ideas. Forums can be either public or private - targeting specific users, products or campaigns.</p>
+  <p class="page-link">To set global and per forum moderation, please go <a href="#">here.</a></p>
+
+  <div class="table-header">
+    <span class="forums-count" id="forums-count">Forums (3)</span>
+    <span>Categories</span>
+    <span>Assigned</span>
+    <span>Visibility</span>
+    <span>Portal</span>
+    <span class="default-header">Default <span class="help-icon" title="The default forum is used when no other forum is specified in your widget.">?</span></span>
+    <span></span>
+  </div>
+
+  <div id="forums-list"></div>
+</main>
+
+<!-- ── Panel Overlay ── -->
+<div class="overlay" id="overlay" onclick="event.stopPropagation(); closePanel()"></div>
+
+<!-- ── Setup Wizard Slide Panel ── -->
+<div class="slide-panel" id="slide-panel">
+  <div class="sp-header">
+    <span class="sp-header-title" id="sp-header-title">Set up forum</span>
+    <button class="sp-header-close" onclick="closePanel()">
+      <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg>
+    </button>
+  </div>
+
+  <div class="sp-step-bar">
+    <div class="sp-step-nav">
+      <button class="sp-step-arrow" id="step-back" onclick="prevStep()">
+        <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      </button>
+      <span id="step-label">Step 1 of 4: Forum: General Feedback</span>
+    </div>
+    <button class="sp-step-arrow" id="step-forward" onclick="nextStep()">
+      <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+
+  <div class="sp-scrollable">
+    <!-- Step 1: Name -->
+    <div class="sp-body" id="step-1">
+      <div class="sp-title-row">
+        <div class="sp-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1b6ee4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+          </svg>
+        </div>
+        <span class="sp-title-text">Name your Forum</span>
+      </div>
+      <p class="sp-description">Forums are most often named for an entire product or large product area.</p>
+      <div class="sp-field-group">
+        <label class="sp-field-label">Forum name (required)</label>
+        <input class="sp-input" id="forum-name-input" type="text" placeholder="e.g. Product Feedback" />
+      </div>
+      <div class="sp-info-box">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#1b6ee4" stroke-width="2" style="flex-shrink:0"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Users will be able to create Ideas, vote, comment, or leave importance rating in this forum.
+      </div>
+      <p style="font-size:14px;color:var(--blue-6);font-weight:600;cursor:pointer;">Let's setup categories!</p>
+      <div class="sp-buttons">
+        <button class="sp-btn-confirm" onclick="nextStep()">Save Changes</button>
+        <button class="sp-btn-cancel" onclick="closePanel()">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Summary View: Auto-Assignment Overview -->
+    <div class="sp-body" id="step-summary" style="display:none;">
+      <div class="sp-title-row">
+        <div class="sp-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1b6ee4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
+            <path d="M16 3.13a4 4 0 010 7.75"/>
+          </svg>
+        </div>
+        <span class="sp-title-text">Auto-Assign Overview</span>
+      </div>
+      <p class="sp-description">Owners assigned to categories in this forum will automatically receive new incoming ideas.</p>
+      <div class="sp-info-box" style="background:#e4f5ec;gap:10px;">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#1a8a4a" stroke-width="2" style="flex-shrink:0"><path d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"/></svg>
+        <span style="color:#1a6b3a;font-weight:500;">Auto-assignment only applies to <strong>new and incoming ideas</strong>. Existing ideas are not affected.</span>
+      </div>
+      <div class="sp-gradient-divider"></div>
+      <div id="summary-list"></div>
+      <div class="sp-buttons">
+        <button class="sp-btn-confirm" onclick="showStep(3)">Edit Assignments</button>
+        <button class="sp-btn-cancel" onclick="closePanel()">Close</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Categories -->
+    <div class="sp-body" id="step-2" style="display:none;">
+      <div class="sp-title-row">
+        <div class="sp-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1b6ee4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
+          </svg>
+        </div>
+        <span class="sp-title-text">Manage Categories</span>
+      </div>
+      <p class="sp-description">Use categories to further organize Ideas within a Forum.</p>
+      <div class="sp-gradient-divider"></div>
+      <div class="category-list" id="category-list"></div>
+      <button class="add-category-btn" onclick="addCategory()">+ Add category</button>
+      <div class="sp-buttons">
+        <button class="sp-btn-confirm" onclick="nextStep()">Save Changes</button>
+        <button class="sp-btn-cancel" onclick="closePanel()">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Auto-Assign Owner -->
+    <div class="sp-body" id="step-3" style="display:none;">
+      <div class="sp-title-row">
+        <div class="sp-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1b6ee4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
+            <path d="M16 3.13a4 4 0 010 7.75"/>
+          </svg>
+        </div>
+        <span class="sp-title-text">Auto-assign Idea Owner</span>
+      </div>
+      <p class="sp-description">Choose how new ideas should be automatically assigned to an admin as an idea owner (optional).</p>
+      <div class="sp-gradient-divider"></div>
+
+      <!-- Accordion options -->
+      <div class="assign-accordion">
+
+        <!-- Skip for now (default, first) -->
+        <div class="assign-accord-item active" id="assign-accord-skip">
+          <div class="assign-accord-header" onclick="selectAssignMode('skip')">
+            <div class="assign-accord-radio"></div>
+            <div class="assign-accord-text">
+              <div class="assign-accord-title">Skip for now</div>
+              <div class="assign-accord-desc">You can still assign owners manually.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Entire Forum -->
+        <div class="assign-accord-item" id="assign-accord-forum">
+          <div class="assign-accord-header" onclick="selectAssignMode('forum')">
+            <div class="assign-accord-radio"></div>
+            <div class="assign-accord-text">
+              <div class="assign-accord-title">Entire Forum</div>
+              <div class="assign-accord-desc">All new ideas in this forum will be assigned to a single admin.</div>
+            </div>
+          </div>
+          <div class="assign-accord-body" id="assign-content-forum">
+            <div class="sp-field-group">
+              <div id="forum-owner-selector"></div>
+            </div>
+            <div id="forum-assign-confirmation"></div>
+          </div>
+        </div>
+
+        <!-- Per Category -->
+        <div class="assign-accord-item" id="assign-accord-category">
+          <div class="assign-accord-header" onclick="selectAssignMode('category')">
+            <div class="assign-accord-radio"></div>
+            <div class="assign-accord-text">
+              <div class="assign-accord-title">Per category</div>
+              <div class="assign-accord-desc">Different admins can own different categories within this forum.</div>
+            </div>
+          </div>
+          <div class="assign-accord-body" id="assign-content-category">
+            <p id="category-assign-count" style="font-size:13px;font-weight:600;color:var(--gray-5);margin-bottom:8px;"></p>
+            <div class="category-assign-list" id="category-list-step3"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="sp-buttons" style="margin-top:8px;">
+        <div class="sp-gradient-divider" style="width:191px;"></div>
+        <p style="font-size:14px;color:var(--gray-6);font-weight:500;letter-spacing:0.3px;text-align:center;">Up Next: Forum visibility</p>
+        <button class="sp-btn-confirm" onclick="saveAssignments(); nextStep()">Next</button>
+        <button class="sp-btn-cancel" onclick="closePanel()">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Step 4: Visibility -->
+    <div class="sp-body" id="step-4" style="display:none;">
+      <div class="sp-title-row">
+        <div class="sp-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1b6ee4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+        </div>
+        <span class="sp-title-text">Set Forum Visibility</span>
+      </div>
+      <p class="sp-description">Forums can be public or private. Public forums get the most feedback from the broadest audience. Private forums lets you control who can see and provide feedback.</p>
+      <div class="sp-gradient-divider"></div>
+      <div id="visibility-options">
+        <div class="visibility-option selected" onclick="selectVisibility(this, 'public')">
+          <div class="vis-radio"></div>
+          <div class="vis-content">
+            <div class="vis-title">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              Visible to public
+            </div>
+            <div class="vis-desc">Users can access your portal</div>
+          </div>
+        </div>
+        <div class="visibility-option" onclick="selectVisibility(this, 'private')">
+          <div class="vis-radio"></div>
+          <div class="vis-content">
+            <div class="vis-title">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+              Make it private
+            </div>
+            <div class="vis-desc">This forum will only be visible to authorized users</div>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:14px;color:var(--blue-6);font-weight:600;cursor:pointer;">Let's configure your portal...</p>
+      <div class="sp-buttons">
+        <button class="sp-btn-confirm" onclick="nextStep()">Save Changes</button>
+        <button class="sp-btn-cancel" onclick="closePanel()">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Step 5: Portal Settings -->
+    <div class="sp-body" id="step-5" style="display:none;">
+      <div class="sp-title-row">
+        <div class="sp-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1b6ee4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+          </svg>
+        </div>
+        <span class="sp-title-text">Portal Forum Settings</span>
+      </div>
+      <p class="sp-description">Customize the messaging your users will see when they visit your portal. Set your welcome message and prompts.</p>
+      <div class="sp-gradient-divider"></div>
+
+      <div class="sp-field-group">
+        <label class="sp-field-label">Welcome Message</label>
+        <p style="font-size:12px;color:var(--gray-5);margin-bottom:4px;">This will be the first thing users see when they visit your portal. It's an opportunity to let users know that you are listening and use the feedback to prioritize your roadmap.</p>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:4px;"><span class="example-link">Example ></span></div>
+        <div class="sp-textarea" contenteditable="true" style="min-height:70px;padding:12px 16px;border:1px solid var(--gray-4);border-radius:6px;font-size:14px;color:var(--blue-9);line-height:1.5;outline:none;">How should we improve our feedback and product decisions?<br><br>We are listening and use the feedback to prioritize our roadmap.</div>
+      </div>
+
+      <div class="sp-field-group" style="margin-top:8px;">
+        <label class="sp-field-label">What do you want to ask?</label>
+        <p style="font-size:12px;color:var(--gray-5);margin-bottom:4px;">Compose a question to your users to get them to answer what kind of feedback you want.</p>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:4px;"><span class="example-link">Some effective prompts ></span></div>
+        <div class="prompt-list" id="prompt-list">
+          <div class="prompt-item">
+            <span class="prompt-item-text">How can we improve feedback management and...</span>
+            <button class="prompt-remove" onclick="this.parentElement.remove()">
+              <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <input class="sp-input" id="new-prompt-input" type="text" placeholder="How can we make product name better?" style="flex:1;" />
+        </div>
+      </div>
+
+      <div class="sp-buttons">
+        <button class="sp-btn-confirm" onclick="closePanel()">Save Changes</button>
+        <button class="sp-btn-cancel" onclick="closePanel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Assign Owner Modal ── -->
+<div class="modal-overlay" id="assign-modal">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <span class="modal-header-title">Assign idea owner</span>
+      <button class="modal-close" onclick="closeAssignModal()">
+        <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-title-row">
+        <div class="modal-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1b6ee4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
+            <path d="M16 3.13a4 4 0 010 7.75"/>
+          </svg>
+        </div>
+        <span class="modal-title">Assign idea owner</span>
+      </div>
+      <p class="modal-desc">The selected admin will be automatically assigned as the owner of new ideas submitted to this category. They will not receive email notifications by default.</p>
+
+      <div class="sp-field-group">
+        <label class="sp-field-label">Owner</label>
+        <div id="admin-selector"></div>
+      </div>
+
+      <div class="modal-gradient"></div>
+
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <button class="modal-btn-assign" id="assign-btn" onclick="confirmAssignOwner()">Assign Owner</button>
+        <button class="modal-btn-cancel" onclick="closeAssignModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Data ──
+  const forums = [
+    { id: 1, name: 'General Feedback', desc: 'How can we improve feedback management and help you make strategic product decisions?', categoryCount: 15, visibility: 'Public', isDefault: true },
+    { id: 2, name: 'Idea Impact Reports (Beta)', desc: 'Ideas and feedback for Idea Impact Reports', categoryCount: 0, visibility: 'Public', isDefault: false },
+    { id: 3, name: 'UserVoice Validation', desc: 'How can we improve UserVoice Validation?', categoryCount: 4, visibility: 'Public', isDefault: false },
+  ];
+
+  const forumCategories = {
+    1: [
+      { id: 'c1', name: 'Authentication', ownerId: null },
+      { id: 'c2', name: 'Contributor Tools', ownerId: null },
+      { id: 'c3', name: 'Customer Communication', ownerId: null },
+      { id: 'c4', name: 'Customer Traits & Segmentation', ownerId: null },
+      { id: 'c5', name: 'Developer API', ownerId: null },
+      { id: 'c6', name: 'Feedback Widgets', ownerId: null },
+      { id: 'c7', name: 'Ideas', ownerId: null },
+      { id: 'c8', name: 'Integrations', ownerId: null },
+      { id: 'c9', name: 'Notifications', ownerId: null },
+      { id: 'c10', name: 'NPS', ownerId: null },
+      { id: 'c11', name: 'Reports & Exports', ownerId: null },
+      { id: 'c12', name: 'Roadmap', ownerId: null },
+      { id: 'c13', name: 'Systems and Architecture', ownerId: null },
+      { id: 'c14', name: 'Users & Permissions', ownerId: null },
+      { id: 'c15', name: 'Web Portal', ownerId: null },
+    ],
+    2: [],
+    3: [
+      { id: 'c16', name: 'Portal Experience', ownerId: null },
+      { id: 'c17', name: 'Admin Tools', ownerId: null },
+      { id: 'c18', name: 'Reporting', ownerId: null },
+      { id: 'c19', name: 'Integrations', ownerId: null },
+    ],
+  };
+
+  const admins = [
+    { id: 'a1', name: 'Sandy Oaks', email: 'sandyoaks@acme.com', initials: 'SO', color: '#6366f1' },
+    { id: 'a2', name: 'Max Golden', email: 'max.golden@acme.com', initials: 'MG', color: '#0891b2' },
+    { id: 'a3', name: 'Karin Tran', email: 'karin.tran@acme.com', initials: 'KT', color: '#d946ef' },
+    { id: 'a4', name: 'Joey Santos', email: 'joey.santos@acme.com', initials: 'JS', color: '#ea580c' },
+    { id: 'a5', name: 'Rishi Kumar', email: 'rishi.kumar@acme.com', initials: 'RK', color: '#16a34a' },
+  ];
+
+  let currentStep = 1;
+  let currentForumId = null;
+  let assigningCategoryId = null;
+  let selectedAdminId = null;
+  let openOverflowId = null;
+
+  // ── Forums Table ──
+  function getAssignedCount(forumId) {
+    const cats = forumCategories[forumId] || [];
+    return cats.filter(c => c.ownerId).length;
+  }
+
+  function renderForums() {
+    const el = document.getElementById('forums-list');
+    el.innerHTML = forums.map(f => {
+      const assigned = getAssignedCount(f.id);
+      const total = (forumCategories[f.id] || []).length;
+      return `
+      <div class="forum-row" onclick="handleRowClick(event, ${f.id})">
+        <div class="forum-info">
+          <div class="forum-drag"><span></span><span></span><span></span></div>
+          <div class="forum-details">
+            <div class="forum-name">${f.name}</div>
+            <div class="forum-desc">${f.desc}</div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:center;">
+          <div class="category-badge">${f.categoryCount}</div>
+        </div>
+        <div class="assigned-cell${assigned > 0 ? ' has-assigned' : ''}" data-step="2">
+          <span>${assigned}/${total}</span>
+        </div>
+        <div class="visibility-cell">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          ${f.visibility}
+        </div>
+        <div class="portal-link" onclick="event.stopPropagation()">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+          Edit
+        </div>
+        <div style="display:flex;justify-content:center;">
+          <div class="default-radio ${f.isDefault ? 'selected' : ''}" onclick="event.stopPropagation(); setDefault(${f.id})"></div>
+        </div>
+        <div class="overflow-wrapper" onclick="event.stopPropagation()">
+          <button class="overflow-btn" onclick="toggleOverflow(${f.id}, event)">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+          </button>
+          <div class="overflow-menu" id="overflow-${f.id}">
+            <div class="overflow-menu-item" onclick="openPanel(${f.id})">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              Edit
+            </div>
+            <div class="overflow-menu-item">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+              Portal Setup
+            </div>
+            <div class="overflow-menu-item">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33"/></svg>
+              Change forum actions
+            </div>
+            <div class="overflow-sep"></div>
+            <div class="overflow-menu-item danger">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+              Delete
+            </div>
+          </div>
+        </div>
+      </div>
+    `}).join('');
+  }
+
+  function setDefault(forumId) {
+    forums.forEach(f => f.isDefault = f.id === forumId);
+    renderForums();
+  }
+
+  function toggleOverflow(forumId, e) {
+    e.stopPropagation();
+    const menu = document.getElementById(`overflow-${forumId}`);
+    const wasOpen = menu.classList.contains('open');
+    closeAllOverflows();
+    if (!wasOpen) menu.classList.add('open');
+  }
+
+  function closeAllOverflows() {
+    document.querySelectorAll('.overflow-menu.open').forEach(m => m.classList.remove('open'));
+  }
+
+  // ── Row click handler ──
+  function handleRowClick(e, forumId) {
+    const assignedCell = e.target.closest('.assigned-cell');
+    if (assignedCell) {
+      openPanel(forumId, 3);
+      return;
+    }
+    openPanel(forumId);
+  }
+
+  // ── Slide Panel ──
+  function openPanel(forumId, step) {
+    currentForumId = forumId || 1;
+    currentStep = step || 1;
+    closeAllOverflows();
+
+    const forum = forums.find(f => f.id === currentForumId);
+    if (forum) {
+      document.getElementById('forum-name-input').value = forum.name;
+    } else {
+      document.getElementById('forum-name-input').value = '';
+    }
+
+    showStep(currentStep);
+    document.getElementById('overlay').classList.add('open');
+    document.getElementById('slide-panel').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePanel() {
+    document.getElementById('overlay').classList.remove('open');
+    document.getElementById('slide-panel').classList.remove('open');
+    document.body.style.overflow = '';
+    renderForums(); // update assigned counts
+  }
+
+  function showStep(n) {
+    currentStep = n;
+    const isSummary = n === 'summary';
+
+    // Hide all step panels
+    [1,2,3,4,5].forEach(i => {
+      document.getElementById(`step-${i}`).style.display = 'none';
+    });
+    document.getElementById('step-summary').style.display = 'none';
+
+    const forum = forums.find(f => f.id === currentForumId);
+    const forumName = forum ? forum.name : 'New Forum';
+
+    if (isSummary) {
+      document.getElementById('step-summary').style.display = '';
+      document.getElementById('sp-header-title').textContent = 'Auto-assign owners';
+      document.getElementById('step-label').textContent = `Forum: ${forumName}`;
+      document.querySelector('.sp-step-bar').style.display = 'none';
+      renderSummary();
+    } else {
+      document.querySelector('.sp-step-bar').style.display = '';
+      document.getElementById(`step-${n}`).style.display = '';
+      const titles = ['Set up forum', 'Set up categories', 'Set up categories', 'Forum visibility', 'Set up portal intro'];
+      document.getElementById('sp-header-title').textContent = titles[n - 1];
+      document.getElementById('step-label').textContent = `Step ${n} of 5: Forum: ${forumName}`;
+      document.getElementById('step-back').classList.toggle('disabled', n === 1);
+      document.getElementById('step-forward').classList.toggle('disabled', n === 5);
+      if (n === 2) renderCategories();
+      if (n === 3) initAssignStep();
+    }
+  }
+
+  function renderSummary() {
+    const cats = forumCategories[currentForumId] || [];
+    const assigned = cats.filter(c => c.ownerId);
+    const unassigned = cats.filter(c => !c.ownerId);
+    const total = cats.length;
+
+    let html = '';
+
+    // Stats bar
+    html += `<div class="summary-stats">
+      <div class="summary-stat">
+        <span class="summary-stat-value${assigned.length > 0 ? ' green' : ''}">${assigned.length}</span>
+        <span class="summary-stat-label">Assigned</span>
+      </div>
+      <div class="summary-stat">
+        <span class="summary-stat-value">${unassigned.length}</span>
+        <span class="summary-stat-label">Unassigned</span>
+      </div>
+      <div class="summary-stat">
+        <span class="summary-stat-value">${total}</span>
+        <span class="summary-stat-label">Total categories</span>
+      </div>
+    </div>`;
+
+    // Assigned section
+    if (assigned.length > 0) {
+      html += '<div class="summary-section"><div class="summary-section-title">Assigned categories</div>';
+      html += assigned.map(c => {
+        const admin = admins.find(a => a.id === c.ownerId);
+        return `<div class="summary-item">
+          <span class="summary-item-name">
+            <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="var(--gray-4)" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+            ${c.name}
+          </span>
+          <span class="summary-owner-tag">
+            <div class="owner-avatar-sm" style="background:${admin.color}">${admin.initials}</div>
+            ${admin.name}
+          </span>
+        </div>`;
+      }).join('');
+      html += '</div>';
+    }
+
+    // Unassigned section
+    if (unassigned.length > 0) {
+      html += '<div class="summary-section"><div class="summary-section-title">Unassigned categories</div>';
+      html += unassigned.map(c => {
+        return `<div class="summary-item">
+          <span class="summary-item-name">
+            <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="var(--gray-4)" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+            ${c.name}
+          </span>
+          <span class="summary-unassigned">No owner</span>
+        </div>`;
+      }).join('');
+      html += '</div>';
+    }
+
+    if (total === 0) {
+      html = '<div style="padding:24px;text-align:center;color:var(--gray-4);font-size:14px;">No categories in this forum yet.</div>';
+    }
+
+    document.getElementById('summary-list').innerHTML = html;
+  }
+
+  function nextStep() {
+    if (typeof currentStep === 'number' && currentStep < 5) showStep(currentStep + 1);
+  }
+  function prevStep() {
+    if (typeof currentStep === 'number' && currentStep > 1) showStep(currentStep - 1);
+  }
+
+  // ── Categories (Step 2) ──
+  function renderCategories() {
+    const cats = forumCategories[currentForumId] || [];
+    const el = document.getElementById('category-list');
+    if (cats.length === 0) {
+      el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--gray-4);font-size:14px;">No categories yet. Add one below.</div>';
+      return;
+    }
+    el.innerHTML = cats.map(c => {
+      return `<div class="category-item">
+        <div class="category-item-left">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="var(--gray-4)" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+          ${c.name}
+        </div>
+        <div class="category-item-right">
+          <button class="remove-owner-btn" onclick="event.stopPropagation(); removeCategory('${c.id}')" title="Remove">
+            <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function removeCategory(catId) {
+    const cats = forumCategories[currentForumId] || [];
+    forumCategories[currentForumId] = cats.filter(c => c.id !== catId);
+    renderCategories();
+  }
+
+  function addCategory() {
+    const name = prompt('Enter category name:');
+    if (!name) return;
+    const cats = forumCategories[currentForumId] || [];
+    cats.push({ id: 'c' + Date.now(), name: name, ownerId: null });
+    forumCategories[currentForumId] = cats;
+    renderCategories();
+  }
+
+  function removeOwner(catId) {
+    const cats = forumCategories[currentForumId] || [];
+    const cat = cats.find(c => c.id === catId);
+    if (cat) { cat.ownerId = null; renderCategories(); }
+  }
+
+  // ── Assign Owner Modal ──
+  function openAssignModal(catId) {
+    assigningCategoryId = catId;
+    selectedAdminId = null;
+
+    const cats = forumCategories[currentForumId] || [];
+    const cat = cats.find(c => c.id === catId);
+    selectedAdminId = cat ? cat.ownerId : null;
+
+    renderAdminSelector();
+    updateAssignBtn();
+    document.getElementById('assign-modal').classList.add('open');
+  }
+
+  function closeAssignModal() {
+    document.getElementById('assign-modal').classList.remove('open');
+    assigningCategoryId = null;
+    selectedAdminId = null;
+  }
+
+  function renderAdminSelector() {
+    const el = document.getElementById('admin-selector');
+    if (selectedAdminId) {
+      const admin = admins.find(a => a.id === selectedAdminId);
+      el.innerHTML = `
+        <div class="selected-admin">
+          <div class="admin-avatar" style="background:${admin.color}">${admin.initials}</div>
+          <div class="admin-info">
+            <span class="admin-name">${admin.name}</span>
+            <span class="admin-email">${admin.email}</span>
+          </div>
+          <button class="selected-admin-remove" onclick="clearSelectedAdmin()">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>`;
+    } else {
+      el.innerHTML = `
+        <div class="modal-dropdown-wrapper">
+          <div class="modal-dropdown" onclick="toggleAdminDropdown()">
+            <span class="modal-dropdown-value" id="admin-dropdown-val">Select admin</span>
+            <svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 1L4 5L7 1" stroke="#787885" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="modal-dropdown-menu" id="admin-dropdown-menu">
+            ${admins.map(a => `
+              <div class="modal-dropdown-option" onclick="selectAdmin('${a.id}')">
+                <div class="admin-avatar" style="background:${a.color}">${a.initials}</div>
+                <div class="admin-info">
+                  <span class="admin-name">${a.name}</span>
+                  <span class="admin-email">${a.email}</span>
+                </div>
+              </div>`).join('')}
+          </div>
+        </div>`;
+    }
+  }
+
+  function toggleAdminDropdown() {
+    const dropdown = document.querySelector('#admin-selector .modal-dropdown');
+    const menu = document.getElementById('admin-dropdown-menu');
+    dropdown.classList.toggle('open');
+    menu.classList.toggle('open');
+  }
+
+  function selectAdmin(adminId) {
+    selectedAdminId = adminId;
+    renderAdminSelector();
+    updateAssignBtn();
+  }
+
+  function clearSelectedAdmin() {
+    selectedAdminId = null;
+    renderAdminSelector();
+    updateAssignBtn();
+  }
+
+  function updateAssignBtn() {
+    const btn = document.getElementById('assign-btn');
+    btn.classList.toggle('ready', !!selectedAdminId);
+  }
+
+  function confirmAssignOwner() {
+    if (!selectedAdminId || !assigningCategoryId) return;
+    const cats = forumCategories[currentForumId] || [];
+    const cat = cats.find(c => c.id === assigningCategoryId);
+    if (cat) {
+      cat.ownerId = selectedAdminId;
+    }
+    closeAssignModal();
+    renderCategories();
+    if (document.getElementById('category-list-step3')) renderCategoriesStep3();
+  }
+
+  // ── Auto-Assign Step (Step 3) ──
+  let assignMode = null; // 'forum' or 'category'
+  let forumOwnerId = null;
+
+  function initAssignStep() {
+    forumOwnerId = null;
+
+    const forum = forums.find(f => f.id === currentForumId);
+
+    // Check existing config to pick correct tab
+    const cats = forumCategories[currentForumId] || [];
+    const assigned = cats.filter(c => c.ownerId);
+    if (assigned.length > 0) {
+      const allSameOwner = assigned.every(c => c.ownerId === assigned[0].ownerId);
+      if (allSameOwner && assigned.length === cats.length && cats.length > 0) {
+        forumOwnerId = assigned[0].ownerId;
+        selectAssignMode('forum');
+      } else {
+        selectAssignMode('category');
+      }
+    } else {
+      selectAssignMode('skip');
+    }
+  }
+
+  function selectAssignMode(mode) {
+    assignMode = mode;
+
+    // Toggle active on accordion items
+    document.querySelectorAll('.assign-accord-item').forEach(el => el.classList.remove('active'));
+    const activeEl = mode === 'forum' ? 'assign-accord-forum'
+      : mode === 'category' ? 'assign-accord-category'
+      : 'assign-accord-skip';
+    document.getElementById(activeEl).classList.add('active');
+
+    if (mode === 'forum') renderForumOwnerSelector();
+    if (mode === 'category') renderCategoriesStep3();
+  }
+
+  function renderForumOwnerSelector() {
+    const el = document.getElementById('forum-owner-selector');
+    if (forumOwnerId) {
+      const admin = admins.find(a => a.id === forumOwnerId);
+      el.innerHTML = `
+        <div class="selected-admin">
+          <div class="admin-avatar" style="background:${admin.color}">${admin.initials}</div>
+          <div class="admin-info">
+            <span class="admin-name">${admin.name}</span>
+            <span class="admin-email">${admin.email}</span>
+          </div>
+          <button class="selected-admin-remove" onclick="clearForumOwner()">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>`;
+      showForumConfirmation();
+    } else {
+      el.innerHTML = `
+        <div class="modal-dropdown-wrapper">
+          <div class="modal-dropdown" onclick="toggleForumOwnerDropdown()">
+            <span class="modal-dropdown-value">Select admin</span>
+            <svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 1L4 5L7 1" stroke="#787885" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="modal-dropdown-menu" id="forum-owner-menu">
+            ${admins.map(a => `
+              <div class="modal-dropdown-option" onclick="selectForumOwner('${a.id}')">
+                <div class="admin-avatar" style="background:${a.color}">${a.initials}</div>
+                <div class="admin-info">
+                  <span class="admin-name">${a.name}</span>
+                  <span class="admin-email">${a.email}</span>
+                </div>
+              </div>`).join('')}
+          </div>
+        </div>`;
+      document.getElementById('forum-assign-confirmation').style.display = 'none';
+    }
+  }
+
+  function toggleForumOwnerDropdown() {
+    const dropdown = document.querySelector('#forum-owner-selector .modal-dropdown');
+    const menu = document.getElementById('forum-owner-menu');
+    dropdown.classList.toggle('open');
+    menu.classList.toggle('open');
+  }
+
+  function selectForumOwner(adminId) {
+    forumOwnerId = adminId;
+    renderForumOwnerSelector();
+  }
+
+  function clearForumOwner() {
+    forumOwnerId = null;
+    renderForumOwnerSelector();
+  }
+
+
+  function showForumConfirmation() {
+    // No extra copy needed — the admin card + context description is sufficient
+  }
+
+  function renderCategoriesStep3() {
+    const cats = forumCategories[currentForumId] || [];
+    const el = document.getElementById('category-list-step3');
+    const countEl = document.getElementById('category-assign-count');
+    const assignedCount = cats.filter(c => c.ownerId).length;
+
+    if (countEl) countEl.textContent = `Categories assigned (${assignedCount}/${cats.length})`;
+
+    if (cats.length === 0) {
+      el.innerHTML = '<div style="padding:14px 16px;background:var(--gray-2);border-radius:8px;color:var(--gray-5);font-size:13px;font-weight:500;line-height:1.5;">You don\'t have any categories configured yet. Go back to Step 2 to add categories first.</div>';
+      return;
+    }
+    el.innerHTML = cats.map(c => {
+      const admin = c.ownerId ? admins.find(a => a.id === c.ownerId) : null;
+
+      if (admin) {
+        return `<div class="category-assign-field" id="cat-field-${c.id}">
+          <div class="category-assign-label">${c.name}</div>
+          <div class="cat-assigned-card">
+            <div class="cat-select-avatar" style="background:${admin.color}">${admin.initials}</div>
+            <div class="cat-assigned-info">
+              <span class="cat-assigned-name">${admin.name}</span>
+              <span class="cat-assigned-email">${admin.email}</span>
+            </div>
+            <button class="cat-select-clear" onclick="event.stopPropagation(); clearCategoryOwner('${c.id}')" title="Remove">
+              <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        </div>`;
+      } else {
+        return `<div class="category-assign-field" id="cat-field-${c.id}">
+          <div class="category-assign-label">${c.name}</div>
+          <div class="category-assign-select" onclick="event.stopPropagation(); openAdminPicker('${c.id}', document.getElementById('cat-field-${c.id}'))">
+            <div class="cat-select-placeholder"></div>
+            <span class="cat-select-name empty">Select admin...</span>
+            <svg class="cat-select-chevron" width="10" height="7" viewBox="0 0 10 7" fill="none"><path d="M1 1.5L5 5.5L9 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </div>`;
+      }
+    }).join('');
+  }
+
+  let activeCatId = null;
+
+  function openAdminPicker(catId, rowEl) {
+    // Remove existing picker
+    const existing = document.getElementById('admin-picker-popover');
+    if (existing) existing.remove();
+    document.querySelectorAll('.category-assign-row.picker-open').forEach(r => r.classList.remove('picker-open'));
+
+    if (activeCatId === catId) { activeCatId = null; return; }
+    activeCatId = catId;
+
+    const cats = forumCategories[currentForumId] || [];
+    const cat = cats.find(c => c.id === catId);
+    const currentOwnerId = cat ? cat.ownerId : null;
+
+    rowEl.classList.add('picker-open');
+
+    const picker = document.createElement('div');
+    picker.id = 'admin-picker-popover';
+    picker.className = 'admin-picker open';
+    picker.onclick = (e) => e.stopPropagation();
+
+    const removeHtml = currentOwnerId
+      ? `<div class="admin-picker-option remove" onclick="pickAdmin('${catId}', null)">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          Remove assignment
+        </div>`
+      : '';
+
+    picker.innerHTML = `
+      <input class="admin-picker-search" type="text" placeholder="Search admins..." oninput="filterAdminPicker(this.value)" autofocus />
+      <div class="admin-picker-list" id="admin-picker-list">
+        ${admins.map(a => `<div class="admin-picker-option ${a.id === currentOwnerId ? 'selected' : ''}" data-name="${a.name.toLowerCase()}" onclick="pickAdmin('${catId}', '${a.id}')">
+          <div class="ap-avatar" style="background:${a.color}">${a.initials}</div>
+          <div class="ap-info">
+            <span class="ap-name">${a.name}</span>
+            <span class="ap-email">${a.email}</span>
+          </div>
+        </div>`).join('')}
+        ${removeHtml}
+      </div>`;
+
+    rowEl.appendChild(picker);
+    picker.querySelector('.admin-picker-search').focus();
+  }
+
+  function filterAdminPicker(query) {
+    const q = query.toLowerCase();
+    document.querySelectorAll('#admin-picker-list .admin-picker-option:not(.remove)').forEach(opt => {
+      const name = opt.getAttribute('data-name') || '';
+      opt.style.display = name.includes(q) ? '' : 'none';
+    });
+  }
+
+  function clearCategoryOwner(catId) {
+    const cats = forumCategories[currentForumId] || [];
+    const cat = cats.find(c => c.id === catId);
+    if (cat) cat.ownerId = null;
+    activeCatId = null;
+    renderCategoriesStep3();
+  }
+
+  function pickAdmin(catId, adminId) {
+    const cats = forumCategories[currentForumId] || [];
+    const cat = cats.find(c => c.id === catId);
+    if (cat) cat.ownerId = adminId || null;
+    activeCatId = null;
+    renderCategoriesStep3();
+  }
+
+  function saveAssignments() {
+    if (assignMode === 'forum' && forumOwnerId) {
+      const cats = forumCategories[currentForumId] || [];
+      cats.forEach(c => { c.ownerId = forumOwnerId; });
+    }
+    // 'category' mode: assignments already saved via modal
+    // 'skip' mode: no changes needed
+  }
+
+  // ── Visibility (Step 4) ──
+  function selectVisibility(el, type) {
+    document.querySelectorAll('.visibility-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  // ── Click outside ──
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.overflow-wrapper')) closeAllOverflows();
+    if (!e.target.closest('.modal-dropdown-wrapper')) {
+      document.querySelectorAll('.modal-dropdown-menu.open').forEach(m => {
+        m.classList.remove('open');
+        m.previousElementSibling?.classList.remove('open');
+      });
+    }
+    // Close admin picker
+    if (!e.target.closest('.admin-picker') && !e.target.closest('.category-assign-row')) {
+      const picker = document.getElementById('admin-picker-popover');
+      if (picker) picker.remove();
+      document.querySelectorAll('.category-assign-row.picker-open').forEach(r => r.classList.remove('picker-open'));
+      activeCatId = null;
+    }
+    // Close forum owner dropdown when clicking outside
+    if (!e.target.closest('#forum-owner-selector')) {
+      const menu = document.getElementById('forum-owner-menu');
+      if (menu) { menu.classList.remove('open'); }
+      const dd = document.querySelector('#forum-owner-selector .modal-dropdown');
+      if (dd) { dd.classList.remove('open'); }
+    }
+  });
+
+  // ── Init ──
+  renderForums();
+</script>
+
+</body>
+</html>
