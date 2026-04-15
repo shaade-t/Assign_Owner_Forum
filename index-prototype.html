@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UserVoice — Forums & Categories</title>
+  <title>UserVoice ‚Äî Forums & Categories</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Proxima+Nova:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 
@@ -34,7 +34,7 @@
       display: flex;
     }
 
-    /* ───── Left Sidebar (UV Admin) ───── */
+    /* ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ Left Sidebar (UV Admin) ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
     .sidebar {
       width: 64px;
       background: white;
@@ -76,7 +76,7 @@
       margin-top: 8px;
     }
 
-    /* ───── Main Content ───── */
+    /* ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ Main Content ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
     .main { flex: 1; padding: 28px 40px; overflow: auto; }
 
     .breadcrumb {
@@ -114,7 +114,7 @@
     .btn-primary { background: var(--blue-6); color: white; }
     .btn-primary:hover { background: var(--blue-7); }
 
-    /* ───── Settings Tabs ───── */
+    /* ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ Settings Tabs ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
     .settings-tabs {
       display: flex; gap: 0; border-bottom: 1px solid var(--gray-3);
       margin-bottom: 24px;
@@ -128,7 +128,7 @@
     .settings-tab:hover { color: var(--blue-9); }
     .settings-tab.active { color: var(--blue-9); font-weight: 600; border-bottom-color: var(--blue-6); }
 
-    /* ───── Forums Table ───── */
+    /* ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ Forums Table ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
     .table-header {
       display: grid;
       grid-template-columns: 1fr 100px 90px 80px 60px 70px 40px;
@@ -211,14 +211,14 @@
       cursor: help;
     }
 
-    /* ───── Overlay ───── */
+    /* ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ Overlay ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
     .overlay {
       display: none; position: fixed; inset: 0;
       background: rgba(7,30,62,0.4); z-index: 200; backdrop-filter: blur(1px);
     }
     .overlay.open { display: block; }
 
-    /* ───── Slide Panel (Setup Wizard) ───── */
+    /* ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ Slide Panel (Setup Wizard) ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
     .slide-panel {
       position: fixed; top: 0; right: -440px; width: 420px; height: 100vh;
       background: white; z-index: 201;
@@ -327,7 +327,7 @@
     }
     .sp-btn-cancel:hover { color: var(--gray-6); }
 
-    /* ───── Category List (Step 2) ───── */
+    /* ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ Category List (Step 2) ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
     .category-list { display: flex; flex-direction: column; gap: 0; }
     .category-item {
       display: flex; align-items: center; justify-content: space-between;
@@ -376,7 +376,7 @@
     }
     .remove-owner-btn:hover { color: var(--blue-9); }
 
-    /* ───── Assign Accordion (Step 3) ───── */
+    /* ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ Assign Accordion (Step 3) ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
     .assign-accordion { display: flex; flex-direction: column; gap: 0; }
     .assign-accord-item {
       border-bottom: 1px solid var(--gray-3);
@@ -415,7 +415,7 @@
     }
     .assign-accord-body .assign-tab-desc a { color: var(--blue-6); text-decoration: underline; }
 
-    /* ───── Category Assign — Stacked Layout ───── */
+    /* ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ Category Assign ‚Äî Stacked Layout ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
     .category-assign-list {
       display: flex; flex-direction: column; gap: 16px;
     }
@@ -462,7 +462,7 @@
     }
     .cat-select-clear:hover { background: rgba(0,0,0,0.08); color: var(--blue-9); }
 
-    /* ───── Admin Picker Dropdown ───── */
+    /* ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ Admin Picker Dropdown ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
     .admin-picker {
       display: none; position: absolute; left: 0; right: 0; top: 100%;
       background: white; border: 1px solid var(--gray-3);
@@ -499,7 +499,7 @@
     .admin-picker-option.remove:hover { background: var(--gray-2); }
     .admin-picker-option.selected { background: var(--blue-2); }
 
-    /* ───── Visibility Options (Step 4) ───── */
+    /* ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ Visibility Options (Step 4) ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
     .visibility-option {
       display: flex; align-items: flex-start; gap: 14px;
       padding: 16px; border: 2px solid var(--gray-3);
@@ -522,7 +522,7 @@
     .vis-title { font-size: 14px; font-weight: 600; color: var(--blue-9); display: flex; align-items: center; gap: 8px; }
     .vis-desc { font-size: 13px; color: var(--gray-5); margin-top: 4px; }
 
-    /* ───── Assign Owner Modal ───── */
+    /* ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ Assign Owner Modal ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
     .modal-overlay {
       display: none; position: fixed; inset: 0;
       background: rgba(7,30,62,0.5); z-index: 300;
@@ -626,7 +626,7 @@
       background: none; border: none; cursor: pointer; font-family: var(--pn);
     }
 
-    /* ───── Add Category Button ───── */
+    /* ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ Add Category Button ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
     .add-category-btn {
       width: 100%; padding: 12px; border: 1.5px dashed var(--gray-4);
       border-radius: 8px; background: none; cursor: pointer;
@@ -636,7 +636,7 @@
     }
     .add-category-btn:hover { border-color: var(--blue-6); background: var(--blue-1); }
 
-    /* ───── Portal Settings (Step 4) ───── */
+    /* ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ Portal Settings (Step 4) ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
     .prompt-list { display: flex; flex-direction: column; gap: 8px; }
     .prompt-item {
       display: flex; align-items: center; gap: 10px;
@@ -658,7 +658,7 @@
     }
     .example-link:hover { text-decoration: underline; }
 
-    /* ───── Overflow Menu ───── */
+    /* ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ Overflow Menu ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
     .overflow-menu {
       position: absolute; right: 0; top: 100%;
       background: white; border: 1px solid var(--gray-3);
@@ -679,7 +679,7 @@
     .overflow-menu-item.danger:hover { background: #fff5f5; }
     .overflow-sep { height: 1px; background: var(--gray-3); margin: 4px 0; }
 
-    /* Assigned cell — clickable to jump to categories */
+    /* Assigned cell ‚Äî clickable to jump to categories */
     .assigned-cell {
       display: flex; justify-content: center; align-items: center;
       cursor: pointer; padding: 4px 0; border-radius: 4px;
@@ -692,7 +692,7 @@
     }
     .assigned-cell.has-assigned span { color: var(--green); }
 
-    /* ───── Summary List ───── */
+    /* ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ Summary List ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
     .summary-section { margin-bottom: 16px; }
     .summary-section-title {
       font-size: 11px; font-weight: 600; color: var(--gray-4);
@@ -730,7 +730,7 @@
 </head>
 <body>
 
-<!-- ── Sidebar ── -->
+<!-- ‚îÄ‚îÄ Sidebar ‚îÄ‚îÄ -->
 <aside class="sidebar">
   <div class="sidebar-logo">
     <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
@@ -773,7 +773,7 @@
   </div>
 </aside>
 
-<!-- ── Main ── -->
+<!-- ‚îÄ‚îÄ Main ‚îÄ‚îÄ -->
 <main class="main">
   <div class="settings-tabs">
     <button class="settings-tab active">General</button>
@@ -812,10 +812,10 @@
   <div id="forums-list"></div>
 </main>
 
-<!-- ── Panel Overlay ── -->
+<!-- ‚îÄ‚îÄ Panel Overlay ‚îÄ‚îÄ -->
 <div class="overlay" id="overlay" onclick="event.stopPropagation(); closePanel()"></div>
 
-<!-- ── Setup Wizard Slide Panel ── -->
+<!-- ‚îÄ‚îÄ Setup Wizard Slide Panel ‚îÄ‚îÄ -->
 <div class="slide-panel" id="slide-panel">
   <div class="sp-header">
     <span class="sp-header-title" id="sp-header-title">Set up forum</span>
@@ -1063,7 +1063,7 @@
   </div>
 </div>
 
-<!-- ── Assign Owner Modal ── -->
+<!-- ‚îÄ‚îÄ Assign Owner Modal ‚îÄ‚îÄ -->
 <div class="modal-overlay" id="assign-modal">
   <div class="modal" onclick="event.stopPropagation()">
     <div class="modal-header">
@@ -1100,7 +1100,7 @@
 </div>
 
 <script>
-  // ── Data ──
+  // ‚îÄ‚îÄ Data ‚îÄ‚îÄ
   const forums = [
     { id: 1, name: 'General Feedback', desc: 'How can we improve feedback management and help you make strategic product decisions?', categoryCount: 15, visibility: 'Public', isDefault: true },
     { id: 2, name: 'Idea Impact Reports (Beta)', desc: 'Ideas and feedback for Idea Impact Reports', categoryCount: 0, visibility: 'Public', isDefault: false },
@@ -1148,7 +1148,7 @@
   let selectedAdminId = null;
   let openOverflowId = null;
 
-  // ── Forums Table ──
+  // ‚îÄ‚îÄ Forums Table ‚îÄ‚îÄ
   function getAssignedCount(forumId) {
     const cats = forumCategories[forumId] || [];
     return cats.filter(c => c.ownerId).length;
@@ -1230,7 +1230,7 @@
     document.querySelectorAll('.overflow-menu.open').forEach(m => m.classList.remove('open'));
   }
 
-  // ── Row click handler ──
+  // ‚îÄ‚îÄ Row click handler ‚îÄ‚îÄ
   function handleRowClick(e, forumId) {
     const assignedCell = e.target.closest('.assigned-cell');
     if (assignedCell) {
@@ -1240,7 +1240,7 @@
     openPanel(forumId);
   }
 
-  // ── Slide Panel ──
+  // ‚îÄ‚îÄ Slide Panel ‚îÄ‚îÄ
   function openPanel(forumId, step) {
     currentForumId = forumId || 1;
     currentStep = step || 1;
@@ -1370,7 +1370,7 @@
     if (typeof currentStep === 'number' && currentStep > 1) showStep(currentStep - 1);
   }
 
-  // ── Categories (Step 2) ──
+  // ‚îÄ‚îÄ Categories (Step 2) ‚îÄ‚îÄ
   function renderCategories() {
     const cats = forumCategories[currentForumId] || [];
     const el = document.getElementById('category-list');
@@ -1414,7 +1414,7 @@
     if (cat) { cat.ownerId = null; renderCategories(); }
   }
 
-  // ── Assign Owner Modal ──
+  // ‚îÄ‚îÄ Assign Owner Modal ‚îÄ‚îÄ
   function openAssignModal(catId) {
     assigningCategoryId = catId;
     selectedAdminId = null;
@@ -1506,7 +1506,7 @@
     if (document.getElementById('category-list-step3')) renderCategoriesStep3();
   }
 
-  // ── Auto-Assign Step (Step 3) ──
+  // ‚îÄ‚îÄ Auto-Assign Step (Step 3) ‚îÄ‚îÄ
   let assignMode = null; // 'forum' or 'category'
   let forumOwnerId = null;
 
@@ -1602,7 +1602,7 @@
 
 
   function showForumConfirmation() {
-    // No extra copy needed — the admin card + context description is sufficient
+    // No extra copy needed ‚Äî the admin card + context description is sufficient
   }
 
   function renderCategoriesStep3() {
@@ -1726,13 +1726,13 @@
     // 'skip' mode: no changes needed
   }
 
-  // ── Visibility (Step 4) ──
+  // ‚îÄ‚îÄ Visibility (Step 4) ‚îÄ‚îÄ
   function selectVisibility(el, type) {
     document.querySelectorAll('.visibility-option').forEach(o => o.classList.remove('selected'));
     el.classList.add('selected');
   }
 
-  // ── Click outside ──
+  // ‚îÄ‚îÄ Click outside ‚îÄ‚îÄ
   document.addEventListener('click', (e) => {
     if (!e.target.closest('.overflow-wrapper')) closeAllOverflows();
     if (!e.target.closest('.modal-dropdown-wrapper')) {
@@ -1757,7 +1757,7 @@
     }
   });
 
-  // ── Init ──
+  // ‚îÄ‚îÄ Init ‚îÄ‚îÄ
   renderForums();
 </script>
 
